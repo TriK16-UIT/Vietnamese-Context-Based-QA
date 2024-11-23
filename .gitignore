@@ -1,0 +1,6 @@
+.venv
+Data
+libs
+models
+transformers
+checkpoints
