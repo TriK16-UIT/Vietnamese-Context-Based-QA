@@ -40,8 +40,8 @@ class ViQuAD(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         return [
-            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": "E:/Vietnamese-Context-based-Question-Answering/Data/raw/train.parquet"}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": "E:/Vietnamese-Context-based-Question-Answering/Data/raw/val.parquet"}),
+            datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": "Data/raw/train.parquet"}),
+            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": "Data/raw/val.parquet"}),
         ]
 
     def _generate_examples(self, filepath):

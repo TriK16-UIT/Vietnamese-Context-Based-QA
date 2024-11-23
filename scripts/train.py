@@ -23,7 +23,7 @@ def train(args):
     tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
 
     #TODO: fix this hardcode
-    raw_datasets = load_dataset("E:/Vietnamese-Context-based-Question-Answering/utils/viquad.py")
+    raw_datasets = load_dataset("utils/viquad.py")
     
     #TODO: check later
     # raw_datasets["train"] = raw_datasets["train"].filter(lambda x: len(x["answers"]["text"]) == 1)
