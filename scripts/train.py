@@ -53,12 +53,15 @@ def train(args):
         shuffle=True,
         collate_fn=default_data_collator,
         batch_size=args.batch_size,
+        pin_memory=True,
+        num_workers=4
     )
 
     eval_dataloader = DataLoader(
         val_set,
         collate_fn=default_data_collator,
-        batch_size=args.batch_size
+        batch_size=args.batch_size,
+        pin_memory=True
     )
 
     device = torch.device(args.device)
@@ -85,7 +88,7 @@ def train(args):
         model.train()
         epoch_loss = 0
         for step, batch in enumerate(train_dataloader):
-            batch = {k: v.to(device) for k, v in batch.items()}
+            batch = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
             outputs = model(**batch)
             loss = outputs.loss
 
