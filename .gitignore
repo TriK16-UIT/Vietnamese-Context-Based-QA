@@ -4,3 +4,4 @@ libs
 models
 transformers
 checkpoints
+frontend\node_modules

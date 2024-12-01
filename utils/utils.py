@@ -68,12 +68,6 @@ def set_global_seeds(seed):
 
 #credits: HuggingFace NLP Course
 def preprocess_dataset(data, tokenizer, max_length, stride):
-    # questions = [' '.join(segmenter.word_segment(q.strip())) for q in data["question"]]
-    # contexts = [' '.join(segmenter.word_segment(c.strip())) for c in data["context"]]
-
-    # questions = [q.strip() for q in data["question"]]
-    # contexts = [c.strip() for c in data["context"]]
-
     questions = [replace_all(q.strip(), dict_map) for q in data["question"]]
     contexts = [replace_all(c.strip(), dict_map) for c in data["context"]]
 
@@ -136,11 +130,6 @@ def preprocess_dataset(data, tokenizer, max_length, stride):
     return inputs      
 
 def preprocess_validation_dataset(data, tokenizer, max_length, stride):
-    # Seems like we have different preprocess for train and val set. TODO: Need to figure out later
-
-    # questions = [' '.join(segmenter.word_segment(q.strip())) for q in data["question"]]
-    # contexts = [' '.join(segmenter.word_segment(c.strip())) for c in data["context"]]
-
     questions = [replace_all(q.strip(), dict_map) for q in data["question"]]
     contexts = [replace_all(c.strip(), dict_map) for c in data["context"]]
     

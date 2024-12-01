@@ -42,6 +42,7 @@ class ViQuAD(datasets.GeneratorBasedBuilder):
         return [
             datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": "Data/raw/train.parquet"}),
             datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": "Data/raw/val.parquet"}),
+            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": "Data/raw/test.parquet"})
         ]
 
     def _generate_examples(self, filepath):
