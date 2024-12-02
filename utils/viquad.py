@@ -41,15 +41,14 @@ class ViQuAD(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         return [
             datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": "Data/raw/train.parquet"}),
-            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": "Data/raw/val.parquet"}),
-            datasets.SplitGenerator(name=datasets.Split.TEST, gen_kwargs={"filepath": "Data/raw/test.parquet"})
+            datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs={"filepath": "Data/raw/val.parquet"})
         ]
 
     def _generate_examples(self, filepath):
         logger.info("generating examples from = %s", filepath)
-        
+        print("Path:", filepath)
         df = pd.read_parquet(filepath)
-
+        
         for key, row in enumerate(df.itertuples()):
             if row.is_impossible is False:
                 answers = row.answers

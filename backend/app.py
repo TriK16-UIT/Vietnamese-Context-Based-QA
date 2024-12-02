@@ -5,7 +5,7 @@ from transformers import pipeline
 app = Flask(__name__)
 CORS(app)
 
-qa_pipeline = pipeline("question-answering", model="xlm-roberta-base", device="cuda")
+qa_pipeline = pipeline("question-answering", model="models/xlm-roberta-base", device="cuda")
 
 context = ""
 

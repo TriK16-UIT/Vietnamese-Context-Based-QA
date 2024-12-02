@@ -10,7 +10,6 @@ from utils.utils import *
 from utils.metric import compute_metrics
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer, default_data_collator, get_scheduler
 from torch.utils.data import DataLoader
-from torch.optim import AdamW
 from tqdm.auto import tqdm
 
 def test(args):
@@ -20,33 +19,32 @@ def test(args):
     print("(" + "; ".join([f'"{arg}": {value}' for arg, value in vars(args).items()]) + ")")
     print("\nStarting testing..\n")
 
-    tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
+    tokenizer = AutoTokenizer.from_pretrained(args.checkpoints)
 
     raw_datasets = load_dataset("utils/viquad.py")
 
-    raw_datasets["test"] = raw_datasets["test"].filter(lambda x: len(x["answers"]["text"]) == 1)
+    raw_datasets["validation"] = raw_datasets["validation"].filter(lambda x: len(x["answers"]["text"]) == 1)
 
-    test_dataset = raw_datasets["test"].map(
+    val_dataset = raw_datasets["validation"].map(
         lambda examples: preprocess_validation_dataset(examples, tokenizer=tokenizer, max_length=args.max_length, stride=args.stride),
         batched=True,
-        remove_columns=raw_datasets["test"].column_names
+        remove_columns=raw_datasets["validation"].column_names
     )
 
     metric = evaluate.load(args.metric)
 
-    test_dataset.set_format("torch")
-    test_set = test_dataset.remove_columns(["example_id", "offset_mapping"])
-    test_set.set_format("torch")
+    val_set = val_dataset.remove_columns(["example_id", "offset_mapping"])
+    val_set.set_format("torch")
 
     test_dataloader = DataLoader(
-        test_set,
+        val_set,
         collate_fn=default_data_collator,
         batch_size=args.batch_size,
         pin_memory=True
     )
 
     device = torch.device(args.device)
-    model = AutoModelForQuestionAnswering.from_pretrained(args.pretrained_model)
+    model = AutoModelForQuestionAnswering.from_pretrained(args.checkpoints)
     model.to(device)
 
     start_logits = []
@@ -62,11 +60,11 @@ def test(args):
 
     start_logits = np.concatenate(start_logits)
     end_logits = np.concatenate(end_logits)
-    start_logits = start_logits[: len(test_dataset)]
-    end_logits = end_logits[: len(test_dataset)]
+    start_logits = start_logits[: len(val_dataset)]
+    end_logits = end_logits[: len(val_dataset)]
 
     metrics = compute_metrics(args, metric,
-        start_logits, end_logits, test_dataset, raw_datasets["test"]
+        start_logits, end_logits, val_dataset, raw_datasets["validation"]
     )
 
     print("Test metrics:", metrics)
@@ -77,8 +75,6 @@ def parse_args():
     parser.add_argument('-metric', type=str, default="squad")
     parser.add_argument('-device', type=str, default="cuda")
     parser.add_argument('-checkpoints', type=str, default="checkpoints")
-    parser.add_argument('-pretrained_model', type=str, default="vinai/bartpho-syllable-base")
-
     parser.add_argument('-batch_size', type=int, default=2)
 
     parser.add_argument('-max_length', type=int, default=1024)
